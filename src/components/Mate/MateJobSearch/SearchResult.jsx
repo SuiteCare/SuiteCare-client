@@ -54,7 +54,7 @@ const SearchResult = ({ data }) => {
           ))
         ) : (
           <div className={styles.no_result}>검색 결과가 없습니다.</div>
-        )}{' '}
+        )}
       </div>
       {isModalVisible && <JobDetailModal modalData={modalData} closeModal={closeModal} />}
     </div>

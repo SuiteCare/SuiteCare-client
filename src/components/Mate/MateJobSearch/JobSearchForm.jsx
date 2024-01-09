@@ -22,19 +22,22 @@ const JobSearchForm = ({ onSearch }) => {
   };
 
   const updateWage = () => {
-    if (wages[0] < 9860) {
-      alert('최소 시급은 2024년 기준 최저임금 9,860원 이상으로 제한하고 있습니다.');
-      setWages([9860, wages[1]]);
+    const newWages = [...wages];
+
+    if (newWages[0] < 9860) {
+      alert('최소 시급은 2024년 기준 최저임금 9,860원 이상이어야 합니다.');
+      newWages[0] = 9860;
     }
 
-    if (wages[0] > wages[1]) {
+    if (newWages[0] > newWages[1]) {
       alert('최대 시급은 최소 시급보다 높아야 합니다.');
-      setWages([wages[0], wages[0]]);
+      newWages[1] = newWages[0];
     }
 
+    setWages(newWages);
     setCheckedItems({
       ...checkedItems,
-      wage: wages,
+      wage: newWages,
     });
   };
 

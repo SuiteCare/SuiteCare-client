@@ -36,7 +36,10 @@ const DaumPostcode = ({ address, setAddress }) => {
 
   const handleInputChange = (e) => {
     const { id, value } = e.target;
-    setAddress({ ...address, [id]: value });
+    setAddress((prevAddress) => ({
+      ...prevAddress,
+      [id]: value,
+    }));
   };
 
   const renderPopup = () => {

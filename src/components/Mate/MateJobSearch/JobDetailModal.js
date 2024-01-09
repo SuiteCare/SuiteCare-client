@@ -1,19 +1,23 @@
 import React, { useState } from 'react';
 
 import useModal from '@/hooks/useModal';
+
 import styles from '@/components/Common/Modal/Modal.module.css';
 
-import { calAge, calTimeDiff, countWeekdays, genderToKo } from '@/utils/calculators.js';
+import { calAge, calTimeDiff, countWeekdays, genderToKo, weekdayDic } from '@/utils/calculators.js';
 
 const JobDetailModal = ({ modalData, closeModal }) => {
   const { handleContentClick } = useModal();
   const [activeTab, setActiveTab] = useState(0);
 
+  const weekDays = modalData.day.split(',').map((e) => weekdayDic[e]);
+  const [startTime, endTime] = [modalData.start_time.slice(0, 5), modalData.end_time.slice(0, 5)];
+
   return (
     <div className={styles.Modal} onClick={closeModal}>
       <div className={styles.modal_wrapper} onClick={handleContentClick}>
         <div className='close_button'>
-          <span onClick={closeModal}></span>
+          <span onClick={closeModal} />
         </div>
 
         {/* 시작 */}
@@ -34,7 +38,7 @@ const JobDetailModal = ({ modalData, closeModal }) => {
               <h5>환자 정보</h5>
               <div className={`${styles.info_wrapper} ${styles.single}`}>
                 <label>진단명</label>
-                <span>{modalData.diagnosis}</span>
+                <span>{modalData.diagnosis_name}</span>
               </div>
             </div>
             <hr />
@@ -57,33 +61,30 @@ const JobDetailModal = ({ modalData, closeModal }) => {
                 <label>간병지 주소</label>
                 <div>
                   <span
-                    className={`${styles.location} ${
-                      modalData.location_type === '자택' ? styles.house : styles.hospital
-                    }`}
+                    className={`${styles.location} ${modalData.location === '자택' ? styles.house : styles.hospital}`}
                   >
-                    {modalData.location_type}
+                    {modalData.location}
                   </span>
-                  <span>{modalData.address}</span>
+                  <span>{modalData.road_address}</span>
                 </div>
               </div>
               <div className={`${styles.info_wrapper} ${styles.single}`}>
                 <label>간병 기간</label>
                 <span>
                   {modalData.start_date} ~ {modalData.end_date}{' '}
-                  <span>(총 {countWeekdays(modalData.start_date, modalData.end_date, modalData.week_days)}일)</span>
+                  <span>(총 {countWeekdays(modalData.start_date, modalData.end_date, weekDays)}일)</span>
                 </span>
               </div>
 
               <div className={`${styles.info_wrapper} ${styles.single}`}>
                 <label>간병 요일</label>
-                <span>{modalData.week_days.join(', ')}</span>
+                <span>{weekDays.join(', ')}</span>
               </div>
 
               <div className={`${styles.info_wrapper} ${styles.single}`}>
                 <label>출퇴근시간</label>
                 <span>
-                  {modalData.start_time} ~ {modalData.end_time}{' '}
-                  <span>(총 {calTimeDiff(modalData.start_time, modalData.end_time)}시간)</span>
+                  {startTime} ~ {endTime} <span>(총 {calTimeDiff(startTime, endTime)}시간)</span>
                 </span>
               </div>
 
@@ -97,8 +98,8 @@ const JobDetailModal = ({ modalData, closeModal }) => {
                 <span>
                   {(
                     modalData.wage *
-                    calTimeDiff(modalData.start_time, modalData.end_time) *
-                    countWeekdays(modalData.start_date, modalData.end_date, modalData.week_days)
+                    calTimeDiff(startTime, endTime) *
+                    countWeekdays(modalData.start_date, modalData.end_date, weekDays)
                   ).toLocaleString()}
                   원
                 </span>
@@ -115,13 +116,13 @@ const JobDetailModal = ({ modalData, closeModal }) => {
               <h5>환자 기본정보</h5>
               <div className={`${styles.info_wrapper} ${styles.double}`}>
                 <label>진단명</label>
-                <span>{modalData.diagnosis}</span>
+                <span>{modalData.diagnosis_name}</span>
               </div>
 
               <div className={styles.info_grid}>
                 <div className={`${styles.info_wrapper} ${styles.double}`}>
                   <label>나이</label>
-                  <span>만 {calAge(modalData.patient_birthday)}세</span>
+                  <span>만 {calAge(modalData.birthday)}세</span>
                 </div>
 
                 <div className={`${styles.info_wrapper} ${styles.double}`}>
